@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 <title>Auth</title>
+<style>
+table, th, td {
+    border: 1px solid black;
+}
+</style>
 </head>
 <body>
 <div id="wrapper">
@@ -20,7 +25,7 @@
 		</div>
 		<div>
 			<table>
-				<tr><th>Key</th><th>Secret</th><th>Name</th><th></th></tr>
+				<tr><th>Key</th><th>Secret</th><th>Name</th><th></th><th></th></tr>
 			<tr v-repeat="key in apikey.keys">
 				<td><span>{{key.key}}</span></td>
 				<td><span>{{key.secret}}</span></td>
@@ -31,9 +36,20 @@
 			</table>
 		</div>
 	</div>
+	<div>
+		<div>Social</div>
+		<button v-on="click: onAuthFacebook()">Facebook</button>
+	</div>
+
+	<div>
+		<div>認証結果</div>
+		<div>{{loggedin_message}}</div>
+	</div>
+
 </div>
 <script src="jquery-2.1.4.min.js"></script>
 <script src="vue.min.js"></script>
+<script src="client.js"></script>
 <script>
 $(function() {
 
@@ -41,6 +57,7 @@ $(function() {
 		el: '#wrapper',
 		data: {
 			message: '',
+			loggedin_message: '',
 			passphrase: '',
 			apikey : {
 				name : '',
@@ -102,15 +119,27 @@ $(function() {
 				var that = this;
 				admin_get('/auth/apikey/token/'+key.key+'/'+key.secret, function(err, data) {
 					if(err) throw err;
-					that.message = "Success to Logged in";
+					that.loggedin_message = "Success to Logged in token=" + data.token;
 					setTimeout(function() {
-						that.message = "";
+						that.loggedin_message = "";
+					}, 2000);
+				});
+			},
+			onAuthFacebook : function() {
+				var that = this;
+				MilkCocoaAuth.url = 'http://localhost:3000';
+				MilkCocoaAuth.authWithFacebook(function(err, token) {
+					if(err) throw err;
+					that.loggedin_message = "Success to Logged in: token = " + token;
+					setTimeout(function() {
+						that.loggedin_message = "";
 					}, 2000);
 				});
 			}
 		}
-	})
-})
+	});
+});
+
 function admin_get(url, cb) {
     admin_base(url, 'GET', null, cb);
 }
