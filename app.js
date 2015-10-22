@@ -101,6 +101,9 @@ app.get('/auth/:provider/callback', function (req, res) {
 	}
 });
 
+app.get('/', function (req, res) {
+	res.redirect('/dev');
+});
 
 app.all('/dev/*', basicAuth('username', 'password'));
 
