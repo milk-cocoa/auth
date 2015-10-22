@@ -26,6 +26,7 @@
 				<td><span>{{key.secret}}</span></td>
 				<td><span>{{key.name}}</span></td>
 				<td><button v-on="click: onKeyRemove(key)">削除</button></td>
+				<td><button v-on="click: onAuth(key)">認証</button></td>
 			</tr>
 			</table>
 		</div>
@@ -95,6 +96,16 @@ $(function() {
 						that.message = "";
 					}, 2000);
 					that.refreshKeys();
+				});
+			},
+			onAuth : function(key) {
+				var that = this;
+				admin_get('/auth/apikey/token/'+key.key+'/'+key.secret, function(err, data) {
+					if(err) throw err;
+					that.message = "Success to Logged in";
+					setTimeout(function() {
+						that.message = "";
+					}, 2000);
 				});
 			}
 		}

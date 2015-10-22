@@ -23,21 +23,23 @@ app.use(session({secret: 'authapisecret'}));
 管理画面
 login
 */
-app.post('/auth/apikey/token', function (req, res) {
-	var app_id = req.params.app_id;
-	var key = req.params.key;
-	var secret = req.params.secret
-	apikey.auth(app_id, key, secret, function(err, data) {
+app.get('/auth/apikey/token/:key/:secret', function (req, res) {
+	var key = req.param('key');
+	var secret = req.param('secret');
+	apikey.auth(key, secret, function(err, data) {
 		if(err) {
 			res.json({err:err});
 			return;
 		}
-		token_generator.generate(app_id, data, function(err, token) {
+		token_generator.generate(data.name, function(err, token) {
 			if(err) {
 				res.json({err:err});
 				return;
 			}
-			res.json({err:null, content : token});
+			res.json({err:null, content : {
+				token:token,
+				profile:data
+			}});
 		});
 	});
 });

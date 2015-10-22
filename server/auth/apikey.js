@@ -54,10 +54,11 @@ ApiKey.prototype.list = function(skip, limit, cb) {
 	});
 }
 
-ApiKey.prototype.auth = function(app_id, key, secret, cb) {
+ApiKey.prototype.auth = function(key, secret, cb) {
 	this.db.collection('apikey').findOne({
 		_id : key
 	}, function(err, doc) {
+		console.log(doc);
 		if(err) {
 			cb(err);
 			return;
@@ -67,7 +68,7 @@ ApiKey.prototype.auth = function(app_id, key, secret, cb) {
 			return;
 		}
 		if(doc.secret == secret) {
-			cb(null, doc.token);
+			cb(null, doc);
 		}else{
 			cb('failed to loggedin');
 		}

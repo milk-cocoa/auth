@@ -5,14 +5,12 @@ module.exports = {
 	setPassphrase : function(passphrase) {
 		this.passphrase = passphrase;
 	},
-	generate : function(app_id, data, cb) {
-		this.passphrase.get_passphrase(app_id, function(err, passphrase) {
-			if(err) {
-				cb(err);
-				return;
-			}
-			var token = jwt.sign(data, passphrase, {expiresInMinutes : 30});
-			cb(null, token);
-		});
+	generate : function(data, cb) {
+		var token = jwt.sign({
+			sub : data,
+			iss : process.env.HOST || 'localhost',
+			aud : 'mlkcca.com'
+		}, this.passphrase, {expiresIn : 30 * 60});
+		cb(null, token);
 	}
 }
