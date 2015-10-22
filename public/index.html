@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+<title>Auth</title>
+</head>
+<body>
+<div id="wrapper">
+	Passphrase:<input type="text" v-model="passphrase" v-on="change: onPassphraseChange"/>
+	<div v-text="message"></div>
+
+	<div>
+		<div>Key</div>
+		<div>
+			<div>
+				Name:<input type="text" v-model="apikey.name"/>
+				<button v-on="click: onKeyAdd">追加</button>
+			</div>
+		</div>
+		<div>
+			<table>
+				<tr><th>Key</th><th>Secret</th><th>Name</th><th></th></tr>
+			<tr v-repeat="key in apikey.keys">
+				<td><span>{{key.key}}</span></td>
+				<td><span>{{key.secret}}</span></td>
+				<td><span>{{key.name}}</span></td>
+				<td><button v-on="click: onKeyRemove(key)">削除</button></td>
+			</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<script src="jquery-2.1.4.min.js"></script>
+<script src="vue.min.js"></script>
+<script>
+$(function() {
+
+	new Vue({
+		el: '#wrapper',
+		data: {
+			message: '',
+			passphrase: '',
+			apikey : {
+				name : '',
+				keys : []
+			}
+		},
+		filters: {
+		},
+		ready : function() {
+			var that = this;
+			admin_get('passphrase', function(err, data) {
+				if(err) throw err;
+				that.passphrase = data;
+			});
+			this.refreshKeys();
+		},
+		methods : {
+			refreshKeys : function() {
+				var that = this;
+				admin_get('apikey', function(err, data) {
+					if(err) throw err;
+					that.apikey.keys = data;
+				});
+			},
+			onPassphraseChange : function() {
+				var that = this;
+				console.log(this.passphrase);
+				admin_post('passphrase', {passphrase:this.passphrase}, function(err, data) {
+					if(err) throw err;
+					that.message = "Save Successed";
+					setTimeout(function() {
+						that.message = "";
+					}, 2000);
+				});
+			},
+			onKeyAdd : function() {
+				var that = this;
+				admin_post('apikey', {name:this.apikey.name}, function(err, data) {
+					if(err) throw err;
+					that.message = "Save Successed";
+					setTimeout(function() {
+						that.message = "";
+					}, 2000);
+					that.refreshKeys();
+				});
+			},
+			onKeyRemove : function(key) {
+				var that = this;
+				admin_delete('apikey/'+key.key, function(err, data) {
+					if(err) throw err;
+					that.message = "Save Successed";
+					setTimeout(function() {
+						that.message = "";
+					}, 2000);
+					that.refreshKeys();
+				});
+			}
+		}
+	})
+})
+function admin_get(url, cb) {
+    admin_base(url, 'GET', null, cb);
+}
+
+function admin_post(url, body, cb) {
+    admin_base(url, 'POST', JSON.stringify(body), cb);
+}
+
+function admin_put(url, body, cb) {
+    admin_base(url, 'PUT', JSON.stringify(body), cb);
+}
+
+function admin_delete(url, cb) {
+    admin_base(url, 'DELETE', null, cb);
+}
+
+function admin_base(url, method, body, cb) {
+    $.ajax({
+        headers: {
+            "Accept":"application/json"
+        },
+        contentType: 'application/json',
+        type: method,
+        data: body,
+        cache: false,
+        url: url,
+        success: function(data) {
+            cb(data.err, data.content);
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

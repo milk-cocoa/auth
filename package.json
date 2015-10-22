@@ -1,0 +1,19 @@
+{
+  "name": "auth",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app",
+    "test": "NODE_ENV=test node_modules/mocha/bin/mocha test/route_test.js"
+  },
+  "dependencies": {
+    "basic-auth-connect": "^1.0.0",
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "express-session": "^1.11.3",
+    "hat": "0.0.3",
+    "jsonwebtoken": "^5.4.0",
+    "mongodb": "^2.0.46"
+  },
+  "devDependencies": {}
+}
