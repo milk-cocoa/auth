@@ -1,10 +1,13 @@
 # auth
-auth server
+This is Milkcocoa auth server.
 
+
+## Feature
+
+- API Key
+- Facebook Login
 
 
 ## ToDo
 
-- Facebook Login
 - Twitter Login
-- Key Auth

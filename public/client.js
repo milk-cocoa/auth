@@ -1,9 +1,10 @@
 (function(){
-	window.MilkCocoaAuth = {
-		url : '',
-		authWithFacebook : function(cb) {
-			transport_window(this.url + '/auth/facebook/dialog', cb);
-		}
+	function MilkCocoaAuth(url) {
+		this.url = url;
+	}
+
+	MilkCocoaAuth.prototype.authWithFacebook = function(cb) {
+		transport_window(this.url + '/auth/facebook/dialog', cb);
 	}
 
 	function transport_window(url, cb) {
@@ -32,4 +33,5 @@
 		if (w['attachEvent']) w['attachEvent']('on' + event, cb);
 		else if (w['addEventListener']) w['addEventListener'](event, cb, false);
 	}
+	window.MilkCocoaAuth = MilkCocoaAuth;
 }())

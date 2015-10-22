@@ -127,8 +127,8 @@ $(function() {
 			},
 			onAuthFacebook : function() {
 				var that = this;
-				MilkCocoaAuth.url = 'http://localhost:3000';
-				MilkCocoaAuth.authWithFacebook(function(err, token) {
+				var milkcocoaAuth = new MilkCocoaAuth('http://localhost:3000');
+				milkcocoaAuth.authWithFacebook(function(err, token) {
 					if(err) throw err;
 					that.loggedin_message = "Success to Logged in: token = " + token;
 					setTimeout(function() {
